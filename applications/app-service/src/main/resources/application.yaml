@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8082
 spring:
   application:
     name: "loan-applications"
@@ -20,5 +20,21 @@ management:
     health:
       probes:
         enabled: true
+logging:
+  level:
+    root: INFO
+    co.com.bancolombia: DEBUG
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+adapters:
+  r2dbc:
+    host: localhost
+    port: 5432
+    database: prestamos
+    username: postgres
+    password: postgres
