@@ -12,7 +12,7 @@ buildCache {
     }
 }
 
-rootProject.name = 'loan-applications'
+rootProject.name = 'loan-application'
 
 include ':app-service'
 include ':model'

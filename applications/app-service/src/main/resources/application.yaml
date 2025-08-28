@@ -24,8 +24,9 @@ logging:
   level:
     root: INFO
     co.com.bancolombia: DEBUG
+
 cors:
-  allowed-origins: "http://localhost:4200,http://localhost:8080"
+  allowed-origins: http://localhost:4200,http://localhost:8080
 
 springdoc:
   swagger-ui:
