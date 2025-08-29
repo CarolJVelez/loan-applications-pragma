@@ -1,5 +1,6 @@
 package co.com.bancolombia.api.exceptions;
 
+import co.com.bancolombia.model.exceptions.BadRequestException;
 import co.com.bancolombia.model.exceptions.LoanPendingException;
 import co.com.bancolombia.model.exceptions.NotFoundException;
 import co.com.bancolombia.model.loanApplication.gateways.LoggerRepository;
@@ -62,6 +63,17 @@ public class GlobalErrorHandler {
                 .body(Map.of(
                         "status", HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         "message", "Error interno del servidor"
+                ));
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleBadRequest(BadRequestException ex) {
+        logger.warn("Solicitud inválida: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                        "status", HttpStatus.BAD_REQUEST.value(),
+                        "message", ex.getMessage()
                 ));
     }
 }

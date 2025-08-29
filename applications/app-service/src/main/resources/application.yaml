@@ -39,3 +39,7 @@ adapters:
     database: prestamos
     username: postgres
     password: postgres
+
+services:
+  auth:
+    url: ${AUTH.SERVICE_URL:http://localhost:8081}

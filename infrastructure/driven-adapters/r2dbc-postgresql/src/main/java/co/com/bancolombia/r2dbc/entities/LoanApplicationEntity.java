@@ -8,6 +8,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.math.BigInteger;
+import java.time.OffsetDateTime;
+
 @Table("loan_application")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,13 +22,19 @@ public class LoanApplicationEntity {
     @Column("id")
     private Long loanApplicationId;
 
+    @Column("user_id")
+    private Long userId;
+
     @Column("document")
     private String document;
+
+    @Column("email")
+    private String email;
 
     @Column("loan_type")
     private String loanType;
 
-    private java.math.BigInteger amount;
+    private BigInteger amount;
 
     @Column("term_months")
     private Integer loanTermMonths;
@@ -33,8 +42,8 @@ public class LoanApplicationEntity {
     private String status;
 
     @Column("created_at")
-    private java.time.OffsetDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @Column("updated_at")
-    private java.time.OffsetDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

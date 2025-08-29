@@ -9,18 +9,20 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface LoanApplicationMapper {
 
-    @Mapping(target = "document", source = "documentoIdentidad")
-    @Mapping(target = "amount", source = "valorPrestamo")
-    @Mapping(target = "loanTermMonths", source = "tiempoPrestamoMeses")
-    @Mapping(target = "loanType", source = "tipoPrestamo")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "amount", source = "amount")
+    @Mapping(target = "loanTermMonths", source = "loanTermMonths")
+    @Mapping(target = "loanType", source = "loanType")
     LoanApplication toModel(CreateLoanApplicationDTO dto);
 
-    @Mapping(target = "prestamoId", source = "loanApplicationId")
-    @Mapping(target = "documentoIdentidad", source = "document")
-    @Mapping(target = "valorPrestamo", source = "amount")
-    @Mapping(target = "tiempoPrestamoMeses", source = "loanTermMonths")
-    @Mapping(target = "tipoPrestamo", source = "loanType")
-    @Mapping(target = "estado", source = "status")
-    @Mapping(target = "fechaCreacion", source = "createdAt")
+    @Mapping(target = "loanApplicationId", source = "loanApplicationId")
+    @Mapping(target = "userId", source = "userId")
+    @Mapping(target = "document", source = "document")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "amount", source = "amount")
+    @Mapping(target = "loanTermMonths", source = "loanTermMonths")
+    @Mapping(target = "loanType", source = "loanType")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "createdAt", source = "createdAt")
     LoanApplicationResponseDTO toDto(LoanApplication loanApplication);
 }

@@ -1,4 +1,4 @@
-package co.com.bancolombia.r2dbc;
+package co.com.bancolombia.r2dbc.reactiveLoanApplication;
 
 import co.com.bancolombia.model.loanApplication.LoanApplication;
 import co.com.bancolombia.model.loanApplication.gateways.LoanApplicationRepository;
@@ -35,8 +35,8 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     }*/
 
     @Override
-    public Mono<Boolean> existsByDocumentAndStatus(String document, String status) {
-        return repository.existsByDocumentAndStatus(document, status);
+    public Mono<Boolean> existsByEmailAndStatus(String document, String status) {
+        return repository.existsByEmailAndStatus(document, status);
     }
 
 }

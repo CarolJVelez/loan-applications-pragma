@@ -1,18 +1,34 @@
 package co.com.bancolombia.config;
 
+
 import co.com.bancolombia.model.loanApplication.gateways.LoanApplicationRepository;
 import co.com.bancolombia.model.loanApplication.gateways.LoggerRepository;
+import co.com.bancolombia.model.loanType.gateways.LoanTypeRepository;
+import co.com.bancolombia.usecase.client.IUserClient;
 import co.com.bancolombia.usecase.loanApplication.LoanApplicationCase;
+import co.com.bancolombia.usecase.validation.LoanValidation;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 
 @Configuration
 public class UseCasesConfig {
 
     @Bean
-    public LoanApplicationCase loanApplicationCase(LoanApplicationRepository repo, LoggerRepository logger) {
-        return new LoanApplicationCase(repo, logger);
+    public LoanValidation loanValidation(
+            LoanApplicationRepository loanApplicationRepository,
+            LoanTypeRepository loanTypeRepository,
+            LoggerRepository logger
+    ) {
+        return new LoanValidation(loanApplicationRepository, loanTypeRepository, logger);
+    }
+
+    @Bean
+    public LoanApplicationCase loanApplicationCase(
+            LoanApplicationRepository repo,
+            LoanValidation loanValidation,
+            LoggerRepository logger,
+            IUserClient iUserClient
+    ) {
+        return new LoanApplicationCase(repo, loanValidation, logger, iUserClient);
     }
 }

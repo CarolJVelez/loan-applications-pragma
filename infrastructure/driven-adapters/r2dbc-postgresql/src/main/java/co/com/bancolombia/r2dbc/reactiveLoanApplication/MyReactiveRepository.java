@@ -1,4 +1,4 @@
-package co.com.bancolombia.r2dbc;
+package co.com.bancolombia.r2dbc.reactiveLoanApplication;
 
 import co.com.bancolombia.r2dbc.entities.LoanApplicationEntity;
 import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
@@ -10,5 +10,5 @@ public interface MyReactiveRepository extends ReactiveCrudRepository<LoanApplica
 
     //Mono<Void> deleteByUserId(Long userId);
 
-    Mono<Boolean> existsByDocumentAndStatus(String document, String status);
+    Mono<Boolean> existsByEmailAndStatus(String email, String status);
 }
