@@ -43,3 +43,5 @@ adapters:
 services:
   auth:
     url: ${AUTH.SERVICE_URL:http://localhost:8081}
+jwt:
+  secret: "a-string-secret-at-least-256-bits-long"

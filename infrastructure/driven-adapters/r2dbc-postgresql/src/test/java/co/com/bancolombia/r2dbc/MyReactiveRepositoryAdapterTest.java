@@ -3,21 +3,14 @@ package co.com.bancolombia.r2dbc;
 
 import co.com.bancolombia.r2dbc.reactiveLoanApplication.MyReactiveRepository;
 import co.com.bancolombia.r2dbc.reactiveLoanApplication.MyReactiveRepositoryAdapter;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivecommons.utils.ObjectMapper;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MyReactiveRepositoryAdapterTest {
-    // TODO: change four you own tests
 
     @InjectMocks
     MyReactiveRepositoryAdapter repositoryAdapter;

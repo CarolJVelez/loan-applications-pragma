@@ -42,33 +42,5 @@ public class LoanApplicationCase {
                 .doOnSuccess(u -> logger.info("Prestamo creado doc={}, valor={}, estado={}",
                         u.getDocument(), u.getAmount(), u.getStatus()));
     }
-/*
-    public Mono<LoanApplication> update(Long id, LoanApplication LoanApplication) {
-        return loanApplicationRepository.findById(id)
-                .switchIfEmpty(Mono.error(new NotFoundException("Usuario no encontrado: " + id)))
-                .flatMap(ex -> loanApplicationRepository.update(
-                        ex.toBuilder()
-                                .name(LoanApplication.getName())
-                                .lastname(LoanApplication.getLastname())
-                                .birthDate(LoanApplication.getBirthDate())
-                                .address(LoanApplication.getAddress())
-                                .phone(LoanApplication.getPhone())
-                                .email(LoanApplication.getEmail())
-                                .baseSalary(LoanApplication.getBaseSalary())
-                                .documentId(LoanApplication.getDocumentId())
-                                .build()
-                ));
-    }
 
-    public Mono<LoanApplication> findById(Long id) {
-        return loanApplicationRepository.findById(id).switchIfEmpty(Mono.error(new NotFoundException("Usuario no encontrado: " + id)));
-    }
-
-    public Flux<LoanApplication> findAll() {
-        return loanApplicationRepository.findAll();
-    }
-
-    public Mono<Void> delete(Long id) {
-        return loanApplicationRepository.findById(id).switchIfEmpty(Mono.error(new NotFoundException("Usuario no encontrado: " + id))).then(loanApplicationRepository.deleteById(id));
-    }*/
 }

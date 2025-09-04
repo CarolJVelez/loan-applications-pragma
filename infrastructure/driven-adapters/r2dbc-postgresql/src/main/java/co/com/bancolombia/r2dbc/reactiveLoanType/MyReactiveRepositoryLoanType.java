@@ -8,8 +8,6 @@ import reactor.core.publisher.Mono;
 
 public interface MyReactiveRepositoryLoanType extends ReactiveCrudRepository<LoanTypeEntity, Long>, ReactiveQueryByExampleExecutor<LoanTypeEntity> {
 
-    //Mono<Void> deleteByUserId(Long userId);
-
     Mono<Boolean> existsByName(String name);
 
     Mono<LoanType> findByName(String name);

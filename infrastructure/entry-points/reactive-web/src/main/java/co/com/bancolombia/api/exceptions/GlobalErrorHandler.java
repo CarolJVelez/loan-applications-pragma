@@ -1,8 +1,6 @@
 package co.com.bancolombia.api.exceptions;
 
-import co.com.bancolombia.model.exceptions.BadRequestException;
-import co.com.bancolombia.model.exceptions.LoanPendingException;
-import co.com.bancolombia.model.exceptions.NotFoundException;
+import co.com.bancolombia.model.exceptions.*;
 import co.com.bancolombia.model.loanApplication.gateways.LoggerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +71,28 @@ public class GlobalErrorHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(Map.of(
                         "status", HttpStatus.BAD_REQUEST.value(),
+                        "message", ex.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String, Object>> handleUnauthorized(UnauthorizedException ex) {
+        logger.warn("No autorizado: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of(
+                        "status", HttpStatus.UNAUTHORIZED.value(),
+                        "message", ex.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(ForbiddenRoleException.class)
+    public ResponseEntity<Map<String, Object>> handleForbiddenRoleException(ForbiddenRoleException ex) {
+        logger.warn("No autorizado: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(Map.of(
+                        "status", HttpStatus.FORBIDDEN.value(),
                         "message", ex.getMessage()
                 ));
     }

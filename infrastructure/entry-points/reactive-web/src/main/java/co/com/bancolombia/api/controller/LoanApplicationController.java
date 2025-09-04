@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
+import org.springframework.security.access.prepost.PreAuthorize;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
@@ -32,26 +32,13 @@ public class LoanApplicationController {
     @Operation(summary = "Crear prestamo", tags = {"Prestamo"})
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CLIENTE')")
     public Mono<ResponseEntity<LoanApplicationResponseDTO>> create(@Valid @RequestBody CreateLoanApplicationDTO body) {
-        return handlerLoanApplication.createUser(body)
+        return handlerLoanApplication.createLoan(body)
                 .map(saved -> ResponseEntity
                         .created(URI.create("/api/v1/solicitud/" + saved.getLoanApplicationId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(mapper.toDto(saved)));
     }
-/*
-    @Operation(summary = "Listar Usuarios", tags = {"ListUsuarios"})
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<LoanApplicationResponseDTO> listAllUser(){
-        return handlerLoanApplication.listAllUsers()
-                .map(mapper::toDto);
-    }
 
-    @Operation(summary = "Obtener usuario por id", tags = {"Usuarios"})
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<LoanApplicationResponseDTO>> findUserById(@PathVariable("id")  Long id) {
-        return handlerLoanApplication.findUserById(id)
-                .map(user -> ResponseEntity.ok(mapper.toDto(user)))
-                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
-    }*/
 }

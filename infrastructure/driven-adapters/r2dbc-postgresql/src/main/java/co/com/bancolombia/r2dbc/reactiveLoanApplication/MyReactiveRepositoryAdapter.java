@@ -23,16 +23,6 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
          */
         super(repository, mapper, d -> mapper.mapBuilder(d, LoanApplication.LoanApplicationBuilder.class).build());
     }
-/*
-    @Override
-    public Mono<Void> deleteById(Long id) {
-        return repository.deleteByUserId(id);
-    }
-
-    @Override
-    public Mono<LoanApplication> update(LoanApplication u) {
-        return null;
-    }*/
 
     @Override
     public Mono<Boolean> existsByEmailAndStatus(String document, String status) {
