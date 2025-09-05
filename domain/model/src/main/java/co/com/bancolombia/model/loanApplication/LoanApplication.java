@@ -17,6 +17,7 @@ public class LoanApplication {
     private Long userId;
     private String document;
     private String email;
+    private String name;
     private BigInteger amount;
     private Integer loanTermMonths;
     private String loanType;

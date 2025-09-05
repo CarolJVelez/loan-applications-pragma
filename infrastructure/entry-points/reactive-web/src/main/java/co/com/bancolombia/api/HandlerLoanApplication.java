@@ -6,13 +6,12 @@ import co.com.bancolombia.model.exceptions.UnauthorizedException;
 import co.com.bancolombia.model.loanApplication.LoanApplication;
 import co.com.bancolombia.model.loanApplication.gateways.LoggerRepository;
 import co.com.bancolombia.usecase.loanApplication.LoanApplicationCase;
+import co.com.bancolombia.usecase.statusLoan.StatusUseCase;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -22,6 +21,7 @@ public class HandlerLoanApplication {
     private final LoanApplicationCase loanApplicationCase;
     private final LoanApplicationMapper mapper;
     private final LoggerRepository logger;
+    private final StatusUseCase statusUseCase;
 
     public Mono<LoanApplication> createLoan(CreateLoanApplicationDTO body) {
         logger.info("POST /api/v1/solicitud");
@@ -36,6 +36,12 @@ public class HandlerLoanApplication {
                     }
                     return loanApplicationCase.create(mapper.toModel(body));
                 });
+    }
+
+    public Mono<StatusUseCase.PageResult<LoanApplication>>
+    listSimple(int page, int size, java.util.List<String> estados) {
+        logger.info("GET /api/v1/solicitud (simple) page={} size={} estados={}", page, size, estados);
+        return statusUseCase.list(page, size, estados);
     }
 
 }

@@ -35,6 +35,7 @@ public class LoanApplicationCase {
                     loanApplication.setStatus(PENDING);
                     loanApplication.setDocument(userClientDetails.getDocument());
                     loanApplication.setUserId(userClientDetails.getUserId());
+                    loanApplication.setName(userClientDetails.getName());
                     loanApplication.setCreatedAt(OffsetDateTime.now(ZoneId.of("America/Bogota")));
 
                     return loanApplicationRepository.save(loanApplication);

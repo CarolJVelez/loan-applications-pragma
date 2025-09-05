@@ -6,7 +6,10 @@ import co.com.bancolombia.r2dbc.entities.LoanApplicationEntity;
 import co.com.bancolombia.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Collection;
 
 @Repository
 public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
@@ -29,4 +32,18 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         return repository.existsByEmailAndStatus(document, status);
     }
 
+    @Override
+    public Flux<LoanApplication> findByStatuses(Collection<String> statuses, int page, int size) {
+        long limit = size;
+        long offset = (long) page * size;
+        String[] arr = statuses.toArray(new String[0]);
+        return repository.findForStatuses(arr, limit, offset)
+                .map(this::toEntity);
+    }
+
+    @Override
+    public Mono<Long> countByStatuses(Collection<String> statuses) {
+        String[] arr = statuses.toArray(new String[0]);
+        return repository.countForStatuses(arr);
+    }
 }

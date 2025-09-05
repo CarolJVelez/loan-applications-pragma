@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .authorizeExchange(ex -> ex
                         .pathMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/actuator/**").permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/v1/solicitud").hasRole("CLIENTE")
+                        .pathMatchers(HttpMethod.GET,  "/api/v1/solicitud/**").hasRole("ASESOR")
                         .anyExchange().authenticated()
                 )
             .oauth2ResourceServer(oauth -> oauth

@@ -31,6 +31,9 @@ public class LoanApplicationEntity {
     @Column("email")
     private String email;
 
+    @Column("name")
+    private String name;
+
     @Column("loan_type")
     private String loanType;
 

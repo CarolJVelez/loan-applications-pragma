@@ -4,8 +4,10 @@ package co.com.bancolombia.config;
 import co.com.bancolombia.model.loanApplication.gateways.LoanApplicationRepository;
 import co.com.bancolombia.model.loanApplication.gateways.LoggerRepository;
 import co.com.bancolombia.model.loanType.gateways.LoanTypeRepository;
+import co.com.bancolombia.model.status.gateways.StatusRepository;
 import co.com.bancolombia.usecase.client.IUserClient;
 import co.com.bancolombia.usecase.loanApplication.LoanApplicationCase;
+import co.com.bancolombia.usecase.statusLoan.StatusUseCase;
 import co.com.bancolombia.usecase.validation.LoanValidation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,5 +32,14 @@ public class UseCasesConfig {
             IUserClient iUserClient
     ) {
         return new LoanApplicationCase(repo, loanValidation, logger, iUserClient);
+    }
+
+    @Bean
+    public StatusUseCase statusUseCase(
+           LoanApplicationRepository loanApplicationRepository,
+           StatusRepository statusRepository,
+           LoggerRepository logger
+    ) {
+        return new StatusUseCase(loanApplicationRepository, statusRepository, logger);
     }
 }

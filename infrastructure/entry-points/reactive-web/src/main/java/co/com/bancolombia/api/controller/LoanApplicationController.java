@@ -3,6 +3,7 @@ package co.com.bancolombia.api.controller;
 import co.com.bancolombia.api.HandlerLoanApplication;
 import co.com.bancolombia.api.dto.request.CreateLoanApplicationDTO;
 import co.com.bancolombia.api.dto.response.LoanApplicationResponseDTO;
+import co.com.bancolombia.api.dto.response.PageDTO;
 import co.com.bancolombia.api.mapper.LoanApplicationMapper;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -16,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/solicitud")
@@ -39,6 +41,30 @@ public class LoanApplicationController {
                         .created(URI.create("/api/v1/solicitud/" + saved.getLoanApplicationId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(mapper.toDto(saved)));
+    }
+
+    @Operation(summary = "Listado simple por estado", tags = {"Prestamo"})
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ASESOR')")
+    public Mono<ResponseEntity<PageDTO<LoanApplicationResponseDTO>>> listSimple(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size,
+            @RequestParam(name = "estado") List<String> estados
+    ) {
+        return handlerLoanApplication.listSimple(page, size, estados)
+                .map(pr -> {
+                    var content = pr.getContent().stream().map(mapper::toDto).toList();
+                    long totalPages = (long) Math.ceil(pr.getTotalElements() / (double) pr.getSize());
+                    return ResponseEntity.ok(
+                            PageDTO.<LoanApplicationResponseDTO>builder()
+                                    .content(content)
+                                    .page(pr.getPage())
+                                    .size(pr.getSize())
+                                    .totalElements(pr.getTotalElements())
+                                    .totalPages(totalPages)
+                                    .build()
+                    );
+                });
     }
 
 }

@@ -19,6 +19,7 @@ public interface LoanApplicationMapper {
     @Mapping(target = "userId", source = "userId")
     @Mapping(target = "document", source = "document")
     @Mapping(target = "email", source = "email")
+    @Mapping(target = "name", source = "name")
     @Mapping(target = "amount", source = "amount")
     @Mapping(target = "loanTermMonths", source = "loanTermMonths")
     @Mapping(target = "loanType", source = "loanType")
