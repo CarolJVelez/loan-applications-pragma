@@ -73,45 +73,37 @@ class LoanValidationTest {
         verifyNoMoreInteractions(logger);
     }
 
-    // ---- validateLoanTypeExists: (según tu código) exist==true -> error ----
+    // ---- validateLoanTypeExists: existe -> complete ----
     @Test
-    void validateLoanTypeExists_whenExists_shouldErrorAndLog() {
+    void validateLoanTypeExists_whenExists_shouldComplete() {
         when(loanTypeRepository.existsByName("HIPOTECARIO")).thenReturn(Mono.just(true));
 
         StepVerifier.create(validation.validateLoanTypeExists("HIPOTECARIO"))
-                .expectErrorSatisfies(err -> {
-                    assertTrue(err instanceof NotFoundException);
-                    assertTrue(err.getMessage().contains("Tipo de prestamo no valido: HIPOTECARIO"));
-                })
-                .verify();
-
-        verify(loanTypeRepository).existsByName("HIPOTECARIO");
-        verify(logger).info("Tipo de prestamo no valido: HIPOTECARIO");
-        verifyNoMoreInteractions(logger);
-    }
-
-    // ---- validateLoanTypeExists: no existe -> OK ----
-    @Test
-    void validateLoanTypeExists_whenNotExists_shouldComplete() {
-        when(loanTypeRepository.existsByName("LIBRE_INVERSION")).thenReturn(Mono.just(false));
-
-        StepVerifier.create(validation.validateLoanTypeExists("LIBRE_INVERSION"))
                 .verifyComplete();
 
-        verify(loanTypeRepository).existsByName("LIBRE_INVERSION");
+        verify(loanTypeRepository).existsByName("HIPOTECARIO");
         verifyNoInteractions(logger);
     }
 
-    private LoanType loanType(BigInteger min, BigInteger max) {
-        // Si usas Lombok builder:
-        return LoanType.builder()
-                .minimumAmount(min)
-                .maximumAmount(max)
-                .build();
-        // Si no tienes builder, crea el objeto como corresponda en tu proyecto.
+    // ---- validateLoanTypeExists: no existe -> NotFound y log ----
+    @Test
+    void validateLoanTypeExists_whenNotExists_shouldErrorAndLog() {
+        when(loanTypeRepository.existsByName("LIBRE_INVERSION")).thenReturn(Mono.just(false));
+
+        StepVerifier.create(validation.validateLoanTypeExists("LIBRE_INVERSION"))
+                .expectError(NotFoundException.class)
+                .verify();
+
+        verify(loanTypeRepository).existsByName("LIBRE_INVERSION");
+        verify(logger).info("Tipo de prestamo no valido: LIBRE_INVERSION");
+        verifyNoMoreInteractions(logger);
     }
 
-    // OK: monto dentro del rango [min, max]
+    private LoanType loanType(BigInteger min, BigInteger max) {
+        return LoanType.builder().minimumAmount(min).maximumAmount(max).build();
+    }
+
+    // ---- validateLoanType: OK dentro de rango ----
     @Test
     void validateLoanType_whenAmountInRange_shouldComplete() {
         when(loanTypeRepository.existsByNameForAmount("HIPOTECARIO"))
@@ -124,7 +116,7 @@ class LoanValidationTest {
         verifyNoInteractions(logger);
     }
 
-    // ERROR: monto MENOR al mínimo
+    // ---- validateLoanType: menor al mínimo ----
     @Test
     void validateLoanType_whenAmountBelowMinimum_shouldErrorAndLog() {
         when(loanTypeRepository.existsByNameForAmount("HIPOTECARIO"))
@@ -142,7 +134,7 @@ class LoanValidationTest {
         verifyNoMoreInteractions(logger);
     }
 
-    // ERROR: monto MAYOR al máximo
+    // ---- validateLoanType: mayor al máximo ----
     @Test
     void validateLoanType_whenAmountAboveMaximum_shouldErrorAndLog() {
         when(loanTypeRepository.existsByNameForAmount("LIBRE_INVERSION"))
@@ -158,5 +150,66 @@ class LoanValidationTest {
         verify(loanTypeRepository).existsByNameForAmount("LIBRE_INVERSION");
         verify(logger).info(startsWith("El valor del prestamo"));
         verifyNoMoreInteractions(logger);
+    }
+
+    @Test
+    void validateLoanTypeExists_ok_shouldComplete() {
+        when(loanTypeRepository.existsByName("LIBRE_INVERSION")).thenReturn(Mono.just(true));
+        StepVerifier.create(validation.validateLoanTypeExists("LIBRE_INVERSION"))
+                .verifyComplete();
+    }
+
+    @Test
+    void validateLoanTypeExists_missing_shouldErrorNotFound() {
+        when(loanTypeRepository.existsByName("NOPE")).thenReturn(Mono.just(false));
+        StepVerifier.create(validation.validateLoanTypeExists("NOPE"))
+                .expectError(NotFoundException.class)
+                .verify();
+    }
+
+    // ------- validateAndGetLoanType: ok --------
+    @Test
+    void validateAndGetLoanType_ok() {
+        var type = LoanType.builder()
+                .name("LIBRE_INVERSION")
+                .minimumAmount(BigInteger.valueOf(1_000_000))
+                .maximumAmount(BigInteger.valueOf(5_000_000))
+                .build();
+        when(loanTypeRepository.existsByNameForAmount("LIBRE_INVERSION")).thenReturn(Mono.just(type));
+
+        StepVerifier.create(validation.validateAndGetLoanType("LIBRE_INVERSION", BigInteger.valueOf(3_000_000)))
+                .expectNext(type)
+                .verifyComplete();
+
+        verify(loanTypeRepository).existsByNameForAmount("LIBRE_INVERSION");
+        verifyNoInteractions(logger);
+    }
+
+    // ------- validateAndGetLoanType: not found (repo vacío) --------
+    @Test
+    void validateAndGetLoanType_notFound_shouldError() {
+        when(loanTypeRepository.existsByNameForAmount("X")).thenReturn(Mono.empty());
+
+        StepVerifier.create(validation.validateAndGetLoanType("X", BigInteger.valueOf(1_000_000)))
+                .expectError(NotFoundException.class)
+                .verify();
+    }
+
+    // ------- validateAndGetLoanType: fuera de rango --------
+    @Test
+    void validateAndGetLoanType_outOfRange_shouldErrorAndLog() {
+        var type = LoanType.builder()
+                .name("LIBRE_INVERSION")
+                .minimumAmount(BigInteger.valueOf(2_000_000))
+                .maximumAmount(BigInteger.valueOf(3_000_000))
+                .build();
+        when(loanTypeRepository.existsByNameForAmount("LIBRE_INVERSION")).thenReturn(Mono.just(type));
+
+        StepVerifier.create(validation.validateAndGetLoanType("LIBRE_INVERSION", BigInteger.valueOf(1_000_000)))
+                .expectError(BadRequestException.class)
+                .verify();
+
+        // Nota: el mensaje aquí lleva tilde en "préstamo"
+        verify(logger).info(startsWith("El valor del préstamo"));
     }
 }

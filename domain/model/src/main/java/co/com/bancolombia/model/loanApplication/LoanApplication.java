@@ -17,10 +17,12 @@ public class LoanApplication {
     private Long userId;
     private String document;
     private String email;
-    private String name;
+    private String names;
     private BigInteger amount;
     private Integer loanTermMonths;
     private String loanType;
     private String status;
+    private BigInteger baseSalary;
+    private BigDecimal interestRate;
     private OffsetDateTime createdAt;
 }

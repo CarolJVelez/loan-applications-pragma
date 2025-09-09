@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.OffsetDateTime;
 
@@ -31,9 +32,6 @@ public class LoanApplicationEntity {
     @Column("email")
     private String email;
 
-    @Column("name")
-    private String name;
-
     @Column("loan_type")
     private String loanType;
 
@@ -43,6 +41,9 @@ public class LoanApplicationEntity {
     private Integer loanTermMonths;
 
     private String status;
+
+    @Column("interest_rate")
+    private BigDecimal interestRate;
 
     @Column("created_at")
     private OffsetDateTime createdAt;

@@ -38,8 +38,9 @@ public class UseCasesConfig {
     public StatusUseCase statusUseCase(
            LoanApplicationRepository loanApplicationRepository,
            StatusRepository statusRepository,
-           LoggerRepository logger
+           LoggerRepository logger,
+           IUserClient userClient
     ) {
-        return new StatusUseCase(loanApplicationRepository, statusRepository, logger);
+        return new StatusUseCase(loanApplicationRepository, statusRepository, logger,userClient);
     }
 }
