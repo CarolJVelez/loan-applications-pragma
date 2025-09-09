@@ -1,13 +1,19 @@
 package co.com.bancolombia.config;
 
+import co.com.bancolombia.model.loanApplication.gateways.LoanApplicationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UseCasesConfigTest {
+
+    @MockitoBean
+    LoanApplicationRepository loanApplicationRepository;
 
     @Test
     void testUseCaseBeansExist() {
