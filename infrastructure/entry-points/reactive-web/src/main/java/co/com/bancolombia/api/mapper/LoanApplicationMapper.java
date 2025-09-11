@@ -1,6 +1,7 @@
 package co.com.bancolombia.api.mapper;
 
 import co.com.bancolombia.api.dto.request.CreateLoanApplicationDTO;
+import co.com.bancolombia.api.dto.request.UpdateLoanApplicationDTO;
 import co.com.bancolombia.api.dto.response.LoanApplicationResponseDTO;
 import co.com.bancolombia.model.loanApplication.LoanApplication;
 import org.mapstruct.Mapper;
@@ -26,6 +27,13 @@ public interface LoanApplicationMapper {
     @Mapping(target = "loanTermMonths", source = "loanTermMonths")
     @Mapping(target = "loanType", source = "loanType")
     @Mapping(target = "interestRate", source = "interestRate")
+    @Mapping(target = "totalMonthly", source = "totalMonthly")
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "observations", source = "observations")
     LoanApplicationResponseDTO toDto(LoanApplication loanApplication);
+
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "observations", source = "observations")
+    LoanApplication toModel(UpdateLoanApplicationDTO dto);
 }

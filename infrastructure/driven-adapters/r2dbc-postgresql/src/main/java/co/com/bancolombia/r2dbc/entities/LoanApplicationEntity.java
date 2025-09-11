@@ -45,9 +45,14 @@ public class LoanApplicationEntity {
     @Column("interest_rate")
     private BigDecimal interestRate;
 
+    @Column("total_monthly")
+    private Integer totalMonthly;
+
     @Column("created_at")
     private OffsetDateTime createdAt;
 
     @Column("updated_at")
     private OffsetDateTime updatedAt;
+
+    private String observations;
 }

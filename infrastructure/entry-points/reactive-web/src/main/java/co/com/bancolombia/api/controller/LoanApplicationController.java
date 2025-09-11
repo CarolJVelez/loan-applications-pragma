@@ -2,6 +2,7 @@ package co.com.bancolombia.api.controller;
 
 import co.com.bancolombia.api.HandlerLoanApplication;
 import co.com.bancolombia.api.dto.request.CreateLoanApplicationDTO;
+import co.com.bancolombia.api.dto.request.UpdateLoanApplicationDTO;
 import co.com.bancolombia.api.dto.response.LoanApplicationResponseDTO;
 import co.com.bancolombia.api.dto.response.PageDTO;
 import co.com.bancolombia.api.mapper.LoanApplicationMapper;
@@ -65,6 +66,18 @@ public class LoanApplicationController {
                                     .build()
                     );
                 });
+    }
+
+    @Operation(summary = "Actualizar prestamo", tags = {"Prestamo"})
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ASESOR')")
+    public Mono<ResponseEntity<LoanApplicationResponseDTO>> update(@Valid @RequestBody UpdateLoanApplicationDTO body) {
+        return handlerLoanApplication.updateLoan(body)
+                .map(saved -> ResponseEntity
+                        .created(URI.create("/api/v1/solicitud/" + saved.getLoanApplicationId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(mapper.toDto(saved)));
     }
 
 }

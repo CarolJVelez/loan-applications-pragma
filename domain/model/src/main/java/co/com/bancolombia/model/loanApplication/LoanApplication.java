@@ -23,6 +23,9 @@ public class LoanApplication {
     private String loanType;
     private String status;
     private BigInteger baseSalary;
+    private Integer totalMonthly;
     private BigDecimal interestRate;
     private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
+    private String observations;
 }

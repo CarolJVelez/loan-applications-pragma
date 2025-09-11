@@ -43,11 +43,39 @@ public class LoanApplicationCase {
                     loanApplication.setCreatedAt(OffsetDateTime.now(ZoneId.of("America/Bogota")));
                     loanApplication.setInterestRate(loanType.getInterestRate());
 
+                    Integer totalMonthly = validation.calculateTotalMonthly(loanApplication.getAmount(), loanType.getInterestRate(),loanApplication.getLoanTermMonths());
+                    loanApplication.setTotalMonthly(totalMonthly);
                     return loanApplicationRepository.save(loanApplication);
                 })
                 .doOnSuccess(u -> logger.info("Prestamo creado doc={}, valor={}, estado={}, id={}",
                         u.getDocument(), u.getAmount(), u.getStatus(), u.getLoanApplicationId()));
     }
 
+    public Mono<LoanApplication> update(LoanApplication loanApplication) {
+        final String email = loanApplication.getEmail();
+        final Long id = loanApplication.getLoanApplicationId();
+        final String newStatus = loanApplication.getStatus();
+
+        return validation.validateExistLoan(email, id)
+                .zipWhen(ignored -> iUserClient.findByEmail(email))
+                .flatMap(tuple -> {
+                    LoanApplication loanBd = tuple.getT1();
+                    var user = tuple.getT2();
+
+                    logger.info("Inicio actualizacion de prestamo del cliente con documento= {}", user.getDocument());
+
+                    if(loanBd.getStatus().equals(newStatus)){
+                        logger.info("El préstamo ya está en estado={}  id={}", newStatus, loanBd.getLoanApplicationId());
+                        return Mono.just(loanBd);
+                    }
+                    loanBd.setStatus(newStatus);
+                    loanBd.setObservations(loanApplication.getObservations());
+                    loanBd.setUpdatedAt(OffsetDateTime.now(ZoneId.of("America/Bogota")));
+
+                    return loanApplicationRepository.save(loanBd);
+                })
+                .doOnSuccess(u -> logger.info("Prestamo actualizado doc={}, valor={}, estado={}, id={}",
+                        u.getDocument(), u.getAmount(), u.getStatus(), u.getLoanApplicationId()));
+    }
 
 }

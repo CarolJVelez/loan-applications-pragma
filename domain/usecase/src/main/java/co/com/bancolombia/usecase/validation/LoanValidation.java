@@ -4,13 +4,17 @@ package co.com.bancolombia.usecase.validation;
 import co.com.bancolombia.model.exceptions.BadRequestException;
 import co.com.bancolombia.model.exceptions.LoanPendingException;
 import co.com.bancolombia.model.exceptions.NotFoundException;
+import co.com.bancolombia.model.loanApplication.LoanApplication;
 import co.com.bancolombia.model.loanApplication.gateways.LoanApplicationRepository;
 import co.com.bancolombia.model.loanApplication.gateways.LoggerRepository;
 import co.com.bancolombia.model.loanType.LoanType;
 import co.com.bancolombia.model.loanType.gateways.LoanTypeRepository;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public final class LoanValidation {
 
@@ -76,6 +80,38 @@ public final class LoanValidation {
                     }
                     return Mono.just(loanType);
                 });
+    }
+
+    public Integer calculateTotalMonthly(BigInteger amount, BigDecimal interestRate, Integer loanTermMonths) {
+        MathContext mc = new MathContext(15, RoundingMode.HALF_UP);
+        BigDecimal p = new BigDecimal(amount);
+        BigDecimal tasaMensual = interestRate
+                .divide(BigDecimal.valueOf(100), mc)
+                .divide(BigDecimal.valueOf(12), mc);
+
+        if (tasaMensual.compareTo(BigDecimal.ZERO) == 0) {
+            // Si la tasa es 0%, cuota = capital / meses
+            return p.divide(BigDecimal.valueOf(loanTermMonths), 0, RoundingMode.HALF_UP)
+                    .intValue();
+        }
+
+        BigDecimal unoMasI = BigDecimal.ONE.add(tasaMensual, mc);
+        BigDecimal pow = unoMasI.pow(loanTermMonths, mc);
+
+        // cuota = P * i * (1+i)^n / ((1+i)^n - 1)
+        BigDecimal num = p.multiply(tasaMensual, mc).multiply(pow, mc);
+        BigDecimal den = pow.subtract(BigDecimal.ONE, mc);
+
+        BigDecimal totalMonthly = num.divide(den, 2, RoundingMode.HALF_UP);
+
+        // Redondeamos al entero más cercano
+        return totalMonthly.setScale(0, RoundingMode.HALF_UP).intValue();
+    }
+
+    public Mono<LoanApplication> validateExistLoan(String email, Long loanApplicationId) {
+        return loanApplicationRepository.findByEmailAndId(email, loanApplicationId)
+                .doOnNext(loan -> logger.info("Préstamo encontrado: {}", loan))
+                .switchIfEmpty(Mono.error(new NotFoundException("No existe el préstamo del usuario con correo: " + email)));
     }
 }
 

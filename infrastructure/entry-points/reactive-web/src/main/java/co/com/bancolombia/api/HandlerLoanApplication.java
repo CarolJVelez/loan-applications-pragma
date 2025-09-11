@@ -1,7 +1,7 @@
 package co.com.bancolombia.api;
 
 import co.com.bancolombia.api.dto.request.CreateLoanApplicationDTO;
-import co.com.bancolombia.api.dto.response.LoanApplicationResponseDTO;
+import co.com.bancolombia.api.dto.request.UpdateLoanApplicationDTO;
 import co.com.bancolombia.api.mapper.LoanApplicationMapper;
 import co.com.bancolombia.model.exceptions.UnauthorizedException;
 import co.com.bancolombia.model.loanApplication.LoanApplication;
@@ -48,4 +48,8 @@ public class HandlerLoanApplication {
         return statusUseCase.list(page, size, estados);
     }
 
+    public Mono<LoanApplication> updateLoan(UpdateLoanApplicationDTO body) {
+        logger.info("PUT /api/v1/solicitud");
+        return loanApplicationCase.update(mapper.toModel(body));
+    }
 }

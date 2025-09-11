@@ -1,6 +1,13 @@
 server:
   port: 8082
 spring:
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+    locations: classpath:db/migration
+    baseline-on-migrate: true
   application:
     name: "loan-applications"
   devtools:
@@ -34,14 +41,16 @@ springdoc:
 
 adapters:
   r2dbc:
-    host: localhost
-    port: 5432
-    database: prestamos
-    username: postgres
-    password: postgres
+    host: ${DB_HOST}
+    port: ${DB_PORT}
+    database: ${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
 
 services:
   auth:
-    url: ${AUTH.SERVICE_URL:http://localhost:8081}
+    url: ${AUTH_SERVICE_URL}
+
 jwt:
-  secret: "a-string-secret-at-least-256-bits-long"
+  secret: ${JWT_SECRET}
+

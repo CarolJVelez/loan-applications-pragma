@@ -25,4 +25,6 @@ public interface MyReactiveRepository extends ReactiveCrudRepository<LoanApplica
     @Query("SELECT COUNT(*) FROM loan_application " +
             "WHERE status = ANY(:statuses)")
     Mono<Long> countForStatuses(@Param("statuses") String[] statuses);
+
+    Mono<LoanApplicationEntity> findByEmailAndLoanApplicationId(String email, Long loanApplicationId);
 }

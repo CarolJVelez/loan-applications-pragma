@@ -26,7 +26,9 @@ public class LoanApplicationResponseDTO {
     private BigInteger baseSalary;
     private BigDecimal interestRate;
     private Integer loanTermMonths;
+    private Integer totalMonthly;
     private String loanType;
     private String status;
+    private String observations;
 
 }
