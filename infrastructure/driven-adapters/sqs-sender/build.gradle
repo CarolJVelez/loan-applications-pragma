@@ -1,0 +1,30 @@
+
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':model')
+
+    // Jackson: BOM + los 3 artefactos para alinear versiones
+    implementation platform("com.fasterxml.jackson:jackson-bom:2.17.1")
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.fasterxml.jackson.core:jackson-core"
+    implementation "com.fasterxml.jackson.core:jackson-annotations"
+
+    // AWS SDK v2 (SQS) usando su BOM (evita mezclar versiones)
+    implementation platform("software.amazon.awssdk:bom:2.25.26")
+    implementation "software.amazon.awssdk:sqs"
+
+    // Necesario si en este módulo tienes @Configuration / @ConfigurationProperties
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation 'org.apache.logging.log4j:log4j-api'
+
+    // (opcional) si usas @Slf4j/@Log4j2 en este módulo solo para compilar
+    compileOnly "org.projectlombok:lombok:1.18.32"
+    annotationProcessor "org.projectlombok:lombok:1.18.32"
+}

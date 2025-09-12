@@ -1,9 +1,0 @@
-dependencies {
-    implementation project(':model')
-    implementation 'org.springframework:spring-context'
-    implementation 'software.amazon.awssdk:sqs:2.25.26'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
-    implementation 'jakarta.persistence:jakarta.persistence-api'
-    implementation 'org.reactivecommons.utils:object-mapper-api:0.1.0'
-}
-

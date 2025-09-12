@@ -9,8 +9,8 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class DecisionEvent {
-    private Long requestId;
+public class MessageSQS {
+    private String fullName;
     private String status;
     private String email;
     private String observations;

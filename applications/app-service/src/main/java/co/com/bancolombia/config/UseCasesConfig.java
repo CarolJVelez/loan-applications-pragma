@@ -4,6 +4,7 @@ package co.com.bancolombia.config;
 import co.com.bancolombia.model.loanApplication.gateways.LoanApplicationRepository;
 import co.com.bancolombia.model.loanApplication.gateways.LoggerRepository;
 import co.com.bancolombia.model.loanType.gateways.LoanTypeRepository;
+import co.com.bancolombia.model.notifications.gateways.LoanNotificationRepository;
 import co.com.bancolombia.model.status.gateways.StatusRepository;
 import co.com.bancolombia.usecase.client.IUserClient;
 import co.com.bancolombia.usecase.loanApplication.LoanApplicationCase;
@@ -29,9 +30,10 @@ public class UseCasesConfig {
             LoanApplicationRepository repo,
             LoanValidation loanValidation,
             LoggerRepository logger,
-            IUserClient iUserClient
+            IUserClient iUserClient,
+            LoanNotificationRepository loanNotificationRepository
     ) {
-        return new LoanApplicationCase(repo, loanValidation, logger, iUserClient);
+        return new LoanApplicationCase(repo, loanValidation, logger, iUserClient, loanNotificationRepository);
     }
 
     @Bean
