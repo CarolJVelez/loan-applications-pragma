@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 public final class LoanValidation {
 
@@ -82,7 +83,7 @@ public final class LoanValidation {
                 });
     }
 
-    public Integer calculateTotalMonthly(BigInteger amount, BigDecimal interestRate, Integer loanTermMonths) {
+    public Integer calculateCurrentLoanMonthlyPayment(BigInteger amount, BigDecimal interestRate, Integer loanTermMonths) {
         MathContext mc = new MathContext(15, RoundingMode.HALF_UP);
         BigDecimal p = new BigDecimal(amount);
         BigDecimal tasaMensual = interestRate
@@ -102,16 +103,23 @@ public final class LoanValidation {
         BigDecimal num = p.multiply(tasaMensual, mc).multiply(pow, mc);
         BigDecimal den = pow.subtract(BigDecimal.ONE, mc);
 
-        BigDecimal totalMonthly = num.divide(den, 2, RoundingMode.HALF_UP);
+        BigDecimal currentLoanMonthlyPayment = num.divide(den, 2, RoundingMode.HALF_UP);
 
         // Redondeamos al entero más cercano
-        return totalMonthly.setScale(0, RoundingMode.HALF_UP).intValue();
+        return currentLoanMonthlyPayment.setScale(0, RoundingMode.HALF_UP).intValue();
     }
 
     public Mono<LoanApplication> validateExistLoan(String email, Long loanApplicationId) {
         return loanApplicationRepository.findByEmailAndId(email, loanApplicationId)
                 .doOnNext(loan -> logger.info("Préstamo encontrado: {}", loan))
                 .switchIfEmpty(Mono.error(new NotFoundException("No existe el préstamo del usuario con correo: " + email)));
+    }
+
+    public Mono<Integer> calculateTotalApprovedLoansMonthlyPayment(Long userId) {
+        return loanApplicationRepository.findAllByUserIdAndStatus(userId, "APPROVED")
+                .map(LoanApplication::getCurrentLoanMonthlyPayment)
+                .filter(Objects::nonNull)
+                .reduce(0, Integer::sum);
     }
 }
 

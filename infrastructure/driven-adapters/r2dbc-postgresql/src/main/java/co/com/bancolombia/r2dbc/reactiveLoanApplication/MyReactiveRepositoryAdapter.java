@@ -52,4 +52,10 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         return repository.findByEmailAndLoanApplicationId(email,id)
                 .map(this::toEntity);
     }
+
+    @Override
+    public Flux<LoanApplication> findAllByUserIdAndStatus(Long userId, String status) {
+        return repository.findAllByUserIdAndStatus(userId,status)
+                .map(this::toEntity);
+    }
 }

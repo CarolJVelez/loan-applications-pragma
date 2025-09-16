@@ -52,4 +52,18 @@ jwt:
 adapter:
   sqs:
     region: "${ADAPTER_SQS_REGION}"
-    queueUrl: "${ADAPTER_SQS_QUEUEURL}"
+    queueUrl: "${ADAPTER_SQS_QUEUEURL}"      # request -> Lambda
+    notificationsQueueUrl: "${ADAPTER_SQS_NOTIFICATIONSQUEUEURL}"      # request -> Lambda
+
+entrypoint:
+  sqs:
+    region: "${ADAPTER_SQS_REGION}"
+    queueUrl: "${ENTRYPOINT_SQS_QUEUEURL}"   # result <- Lambda
+    waitTimeSeconds: 20
+    maxNumberOfMessages: 10
+    visibilityTimeoutSeconds: 30
+    numberOfThreads: 1
+
+
+
+

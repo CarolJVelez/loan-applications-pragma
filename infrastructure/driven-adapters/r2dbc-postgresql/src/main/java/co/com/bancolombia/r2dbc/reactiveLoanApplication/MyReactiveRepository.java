@@ -27,4 +27,7 @@ public interface MyReactiveRepository extends ReactiveCrudRepository<LoanApplica
     Mono<Long> countForStatuses(@Param("statuses") String[] statuses);
 
     Mono<LoanApplicationEntity> findByEmailAndLoanApplicationId(String email, Long loanApplicationId);
+
+    Flux<LoanApplicationEntity> findAllByUserIdAndStatus(Long userId, String status);
+
 }

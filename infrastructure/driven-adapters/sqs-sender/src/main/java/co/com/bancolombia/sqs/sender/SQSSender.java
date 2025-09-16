@@ -15,18 +15,20 @@ import software.amazon.awssdk.services.sqs.model.SendMessageResponse;
 public class SQSSender /*implements SomeGateway*/ {
     private final SQSSenderProperties properties;
     private final SqsAsyncClient client;
+    
 
-    public Mono<String> send(String message) {
-        return Mono.fromCallable(() -> buildRequest(message))
-                .flatMap(request -> Mono.fromFuture(client.sendMessage(request)))
-                .doOnNext(response -> log.debug("Message sent {}", response.messageId()))
+    public Mono<String> sendTo(String queueUrl, String message) {
+        return Mono.fromCallable(() -> {
+                    log.info("[SQS SEND] queue={} size={}B body={}",
+                            queueUrl, message != null ? message.getBytes().length : 0, message);
+                    return SendMessageRequest.builder()
+                            .queueUrl(queueUrl)
+                            .messageBody(message)
+                            .build();
+                })
+                .flatMap(req -> Mono.fromFuture(client.sendMessage(req)))
+                .doOnNext(resp -> log.debug("[SQS SEND OK] queue={} messageId={}", queueUrl, resp.messageId()))
                 .map(SendMessageResponse::messageId);
     }
 
-    private SendMessageRequest buildRequest(String message) {
-        return SendMessageRequest.builder()
-                .queueUrl(properties.queueUrl())
-                .messageBody(message)
-                .build();
-    }
 }

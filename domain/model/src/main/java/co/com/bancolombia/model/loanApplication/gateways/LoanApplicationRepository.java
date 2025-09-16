@@ -18,6 +18,8 @@ public interface LoanApplicationRepository {
 
     Mono<LoanApplication> findByEmailAndId(String email, Long id);
 
+    Flux<LoanApplication> findAllByUserIdAndStatus(Long userId, String status);
+
 
 
 }

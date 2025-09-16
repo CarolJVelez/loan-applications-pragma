@@ -6,9 +6,9 @@ import co.com.bancolombia.api.dto.response.LoanApplicationResponseDTO;
 import co.com.bancolombia.model.loanApplication.LoanApplication;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface LoanApplicationMapper {
 
     @Mapping(target = "email", source = "email")
@@ -27,7 +27,10 @@ public interface LoanApplicationMapper {
     @Mapping(target = "loanTermMonths", source = "loanTermMonths")
     @Mapping(target = "loanType", source = "loanType")
     @Mapping(target = "interestRate", source = "interestRate")
-    @Mapping(target = "totalMonthly", source = "totalMonthly")
+    @Mapping(target = "maxIndebtedness", source = "maxIndebtedness")
+    @Mapping(target = "currentLoanMonthlyPayment", source = "currentLoanMonthlyPayment")
+    @Mapping(target = "totalApprovedLoansMonthlyPayment", source = "totalApprovedLoansMonthlyPayment")
+    @Mapping(target = "availableIndebtedness", source = "availableIndebtedness")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "observations", source = "observations")
     LoanApplicationResponseDTO toDto(LoanApplication loanApplication);

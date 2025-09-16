@@ -36,7 +36,9 @@ CREATE TABLE IF NOT EXISTS loan_application (
   term_months    INT           NOT NULL CHECK (term_months BETWEEN 1 AND 120),
   status         VARCHAR(40)   NOT NULL DEFAULT 'PENDING_REVIEW',
   interest_rate       NUMERIC(5,2) NOT NULL,
-  total_monthly  NUMERIC(100)   ,
+  current_loan_monthly_payment          NUMERIC(100),
+  total_approved_loans_monthly_payment  NUMERIC(100),
+  available_indebtedness                NUMERIC(100),
   observations   varchar(300),
   created_at     TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
   updated_at     TIMESTAMPTZ   NOT NULL DEFAULT NOW()
@@ -56,11 +58,3 @@ VALUES
   ('MORTGAGE',  'Hipotecario', TRUE, 20000000, 500000000, 3.25,  TRUE)
 ON CONFLICT (code) DO NOTHING;
 
-INSERT INTO public.loan_application
-(document, email, user_id, loan_type, amount, term_months, status, interest_rate, total_monthly, created_at, updated_at)
-VALUES
-    ('123',    'carolvelez@example.com',  4, 'Personal',  1500000, 12, 'PENDING_REVIEW', 1.50, NULL, DEFAULT, DEFAULT),
-    ('1234',   'carolvelez1@example.com', 5, 'Comercial', 5000001, 12, 'PENDING_REVIEW', 2.00, NULL, DEFAULT, DEFAULT),
-    ('12345',  'carolvelez2@example.com', 6, 'Personal',  1500000, 12, 'PENDING_REVIEW', 1.50, NULL, DEFAULT, DEFAULT),
-    ('123456', 'carolvelez3@example.com', 7, 'Comercial', 5000001, 12, 'MANUAL_REVIEW',  2.00, NULL, DEFAULT, DEFAULT),
-    ('123456', 'carolvelez3@example.com', 8, 'Personal',  1500000, 12, 'REJECTED',       1.50, NULL, DEFAULT, DEFAULT);

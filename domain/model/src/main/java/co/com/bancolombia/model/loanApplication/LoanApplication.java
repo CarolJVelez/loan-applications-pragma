@@ -23,7 +23,10 @@ public class LoanApplication {
     private String loanType;
     private String status;
     private BigInteger baseSalary;
-    private Integer totalMonthly;
+    private BigDecimal maxIndebtedness;
+    private Integer currentLoanMonthlyPayment;
+    private Integer totalApprovedLoansMonthlyPayment;
+    private Integer availableIndebtedness; //Endeudamiento disponible
     private BigDecimal interestRate;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;

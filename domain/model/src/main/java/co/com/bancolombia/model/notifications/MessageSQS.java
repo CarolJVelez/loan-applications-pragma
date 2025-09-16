@@ -2,6 +2,8 @@ package co.com.bancolombia.model.notifications;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -15,4 +17,7 @@ public class MessageSQS {
     private String email;
     private String observations;
     private OffsetDateTime updatedAt;
+    private BigInteger amount;
+    private Integer loanTermMonths;
+    private BigDecimal annualInterestRate;
 }

@@ -24,9 +24,12 @@ public class LoanApplicationResponseDTO {
     private String names;
     private BigInteger amount;
     private BigInteger baseSalary;
+    private BigDecimal maxIndebtedness;
     private BigDecimal interestRate;
     private Integer loanTermMonths;
-    private Integer totalMonthly;
+    private Integer currentLoanMonthlyPayment;
+    private Integer totalApprovedLoansMonthlyPayment;
+    private Integer availableIndebtedness; //Endeudamiento disponible
     private String loanType;
     private String status;
     private String observations;
