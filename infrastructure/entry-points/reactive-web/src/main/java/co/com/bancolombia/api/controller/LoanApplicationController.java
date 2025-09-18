@@ -9,6 +9,7 @@ import co.com.bancolombia.api.mapper.LoanApplicationMapper;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -33,6 +34,7 @@ public class LoanApplicationController {
     private final LoanApplicationMapper mapper;
 
     @Operation(summary = "Crear prestamo", tags = {"Prestamo"})
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CLIENTE')")
@@ -46,6 +48,7 @@ public class LoanApplicationController {
 
     @Operation(summary = "Listado simple por estado", tags = {"Prestamo"})
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ASESOR')")
     public Mono<ResponseEntity<PageDTO<LoanApplicationResponseDTO>>> listSimple(
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -71,6 +74,7 @@ public class LoanApplicationController {
     @Operation(summary = "Actualizar prestamo", tags = {"Prestamo"})
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ASESOR')")
     public Mono<ResponseEntity<LoanApplicationResponseDTO>> update(@Valid @RequestBody UpdateLoanApplicationDTO body) {
         return handlerLoanApplication.updateLoan(body)
