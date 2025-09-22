@@ -12,6 +12,7 @@ import co.com.bancolombia.usecase.statusLoan.StatusUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,7 +20,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -125,4 +129,54 @@ class StatusUseCaseTest {
 
         verifyNoInteractions(userClient);
     }
+
+    @Test
+    void list_enrichesWithUserData_whenUserIdsPresent() {
+        LoanApplication a = LoanApplication.builder()
+                .loanApplicationId(1L).userId(10L).email("a@x.com")
+                .amount(new BigInteger("1000000"))
+                .loanType("LIBRE").status("APPROVED")
+                .interestRate(new BigDecimal("1.0")).loanTermMonths(12)
+                .build();
+
+        LoanApplication b = LoanApplication.builder()
+                .loanApplicationId(2L).userId(20L).email("b@x.com")
+                .amount(new BigInteger("2000000"))
+                .loanType("LIBRE").status("APPROVED")
+                .interestRate(new BigDecimal("1.0")).loanTermMonths(12)
+                .build();
+
+        // 1) El use case valida que el estado exista
+        when(statusRepository.existsByName("APPROVED")).thenReturn(Mono.just(true));
+
+        // 2) Repositorio de LoanApplications (usa tu firma real: findByStatuses(statuses, page, size))
+        when(loanApplicationRepository.findByStatuses(ArgumentMatchers.<Collection<String>>any(), eq(0), eq(10)))
+                .thenReturn(Flux.just(a, b));
+        when(loanApplicationRepository.countByStatuses(ArgumentMatchers.<Collection<String>>any()))
+                .thenReturn(Mono.just(2L));
+
+        // 3) Enriquecimiento con datos de usuario (OJO: es iUserClient)
+        UserClientDetails ua = UserClientDetails.builder()
+                .userId(10L).name("Alice").lastName("R").document("111").build();
+        UserClientDetails ub = UserClientDetails.builder()
+                .userId(20L).name("Bob").lastName("S").document("222").build();
+        when(userClient.findByIds(ArgumentMatchers.<List<Long>>any()))
+                .thenReturn(Flux.just(ua, ub));
+
+        // 4) Ejecuta y verifica
+        StepVerifier.create(statusUseCase.list(0, 10, Set.of("APPROVED")))
+                .assertNext((PageResult<LoanApplication> page) -> {
+                    assertEquals(2, page.getContent().size());
+                    assertEquals(2L, page.getTotalElements());
+                    assertEquals(10L, page.getContent().get(0).getUserId());
+                    assertEquals(20L, page.getContent().get(1).getUserId());
+                })
+                .verifyComplete();
+
+        // opcional: verifica que sí validó el estado
+        verify(statusRepository).existsByName("APPROVED");
+    }
+
+
+
 }

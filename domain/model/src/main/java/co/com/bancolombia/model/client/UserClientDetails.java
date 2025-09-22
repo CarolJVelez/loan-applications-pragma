@@ -2,6 +2,7 @@ package co.com.bancolombia.model.client;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 
@@ -21,4 +22,5 @@ public class UserClientDetails {
     private String phone;
     private String email;
     private BigInteger baseSalary;
+    private BigDecimal maxIndebtedness;
 }
