@@ -27,4 +27,6 @@ dependencies {
     // (opcional) si usas @Slf4j/@Log4j2 en este módulo solo para compilar
     compileOnly "org.projectlombok:lombok:1.18.32"
     annotationProcessor "org.projectlombok:lombok:1.18.32"
+    implementation "software.amazon.awssdk:sns"
+
 }

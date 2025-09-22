@@ -123,6 +123,7 @@ public class LoanApplicationCase {
                                                     + (userClientDetails.getLastName() != null ? " " + userClientDetails.getLastName() : "");
 
                                     MessageSQS msg = MessageSQS.builder()
+                                            .loanId(saved.getLoanApplicationId())
                                             .fullName(fullName.trim())
                                             .status(saved.getStatus().equals("APPROVED") ? "APROBADO" : "RECHAZADO")
                                             .email(saved.getEmail())

@@ -12,6 +12,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class MessageSQS {
+    private Long loanId;
     private String fullName;
     private String status;
     private String email;

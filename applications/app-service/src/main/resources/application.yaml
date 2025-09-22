@@ -55,6 +55,14 @@ adapter:
     queueUrl: "${ADAPTER_SQS_QUEUEURL}"      # request -> Lambda
     notificationsQueueUrl: "${ADAPTER_SQS_NOTIFICATIONSQUEUEURL}"      # request -> Lambda
 
+aws:
+  region: "${ADAPTER_SQS_REGION}"
+
+publisher:
+  sns:
+    enabled: true
+    topicArn: "${PUBLISHER_SNS_TOPIC}"
+
 entrypoint:
   sqs:
     region: "${ADAPTER_SQS_REGION}"
