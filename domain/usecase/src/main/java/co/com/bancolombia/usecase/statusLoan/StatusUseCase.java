@@ -79,6 +79,7 @@ public class StatusUseCase {
                                                         if (user != null) {
                                                             loan.setBaseSalary(user.getBaseSalary());
                                                             loan.setNames((user.getName() + " " + user.getLastName()).trim());
+                                                            loan.setMaxIndebtedness(user.getMaxIndebtedness());
                                                         }
                                                     });
                                                     logger.info("Usuarios obtenidos desde auth: {}", users.size());

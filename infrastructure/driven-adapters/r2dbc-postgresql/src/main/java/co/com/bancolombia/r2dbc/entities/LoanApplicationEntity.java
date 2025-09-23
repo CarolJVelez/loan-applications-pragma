@@ -45,9 +45,20 @@ public class LoanApplicationEntity {
     @Column("interest_rate")
     private BigDecimal interestRate;
 
+    @Column("current_loan_monthly_payment")
+    private Integer currentLoanMonthlyPayment;
+
+    @Column("total_approved_loans_monthly_payment")
+    private Integer totalApprovedLoansMonthlyPayment;
+
+    @Column("available_indebtedness")
+    private Integer availableIndebtedness;
+
     @Column("created_at")
     private OffsetDateTime createdAt;
 
     @Column("updated_at")
     private OffsetDateTime updatedAt;
+
+    private String observations;
 }

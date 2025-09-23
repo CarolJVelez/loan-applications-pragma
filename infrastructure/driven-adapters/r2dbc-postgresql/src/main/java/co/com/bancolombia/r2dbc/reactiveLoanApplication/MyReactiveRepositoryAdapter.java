@@ -46,4 +46,16 @@ public class MyReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         String[] arr = statuses.toArray(new String[0]);
         return repository.countForStatuses(arr);
     }
+
+    @Override
+    public Mono<LoanApplication> findByEmailAndId(String email, Long id) {
+        return repository.findByEmailAndLoanApplicationId(email,id)
+                .map(this::toEntity);
+    }
+
+    @Override
+    public Flux<LoanApplication> findAllByUserIdAndStatus(Long userId, String status) {
+        return repository.findAllByUserIdAndStatus(userId,status)
+                .map(this::toEntity);
+    }
 }

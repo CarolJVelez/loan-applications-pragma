@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -211,5 +212,34 @@ class LoanValidationTest {
 
         // Nota: el mensaje aquí lleva tilde en "préstamo"
         verify(logger).info(startsWith("El valor del préstamo"));
+    }
+
+    @Test
+    void calculateMonthlyPayment_zeroInterest() {
+        Integer cuota = validation.calculateCurrentLoanMonthlyPayment(
+                BigInteger.valueOf(1_200_000),
+                new BigDecimal("0.00"),
+                12);
+        assertEquals(100000, cuota); // 1,200,000 / 12
+    }
+
+    @Test
+    void calculateMonthlyPayment_positiveInterest() {
+        Integer cuota = validation.calculateCurrentLoanMonthlyPayment(
+                BigInteger.valueOf(10_000_000),
+                new BigDecimal("12.00"),
+                12);
+        // Valor aproximado; la implementación redondea HALF_UP a entero
+        // Cuota esperada ~ 888,487
+        assertEquals(888488, cuota);
+    }
+
+    @Test
+    void validateExistLoan_notFound() {
+        when(loanApplicationRepository.findByEmailAndId(anyString(), anyLong())).thenReturn(Mono.empty());
+
+        StepVerifier.create(validation.validateExistLoan("x@y.com", 99L))
+                .expectError(NotFoundException.class)
+                .verify();
     }
 }
